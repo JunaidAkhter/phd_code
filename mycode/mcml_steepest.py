@@ -10,7 +10,7 @@ from torchmin import minimize
 from typing import Any, Callable
 from dataclasses import dataclass
 from object import ObjNew
-from object import ObjNew, NNApproximator
+from model import NNApproximator
 
 nn_approximator = NNApproximator(4, 10)
 
@@ -26,8 +26,6 @@ class SteepestDescent:
         
         g = torch.zeros_like(x)
 
-        print("the shape of g is", g.shape)
-
         for i in range(self.ndim):
             z = x.clone()  #needed to avoid in-place operation as x required gradient. 
             tmp = z[i]
@@ -36,15 +34,8 @@ class SteepestDescent:
             z[i] = tmp - h
             yl = f(z)
 
-            print("printing the values of loss functinos:", yr, yl)
-            print("printing the shapes of first loss functinos:", yr.shape,"printing \
-                the shape of the second loss function", yl.shape)
-
-            print("printing the shape of the substraction of loss functinos:", (yr - yl).shape)
-
             g[i] = (yr - yl) / (2 * h)
-            #x[i] = tmp
-        #print("this is how g looks like:", g.shape)
+
         return g
 
     def nabla_F(self, x):

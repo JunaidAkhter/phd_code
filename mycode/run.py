@@ -1,7 +1,8 @@
 
 import numpy as np
 from mcml_steepest import SteepestDescent
-from object import ObjNew, NNApproximator
+from object import ObjNew
+from model import NNApproximator
 import torch
 
 

@@ -44,9 +44,6 @@ for i in range(nmax):
     
     x_opt[i] = torch.flatten(x)
 
-    print("type of the objective function container:", type(obj.Fs(x)))
-
-    print("the shape of the function ", torch.tensor(obj.Fs(x)).shape)
 
     f_opt[i] = torch.tensor(obj.Fs(x))
 
