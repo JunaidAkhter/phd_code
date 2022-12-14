@@ -117,8 +117,8 @@ class ObjNew:
     def g(self,nn: NNApproximator, x: torch.Tensor = None, verbose: bool = False) -> torch.float:
         """replicating the function fu in order to check if the code is working correctly."""
 
-        
-        return  df() - R * x * (1 - x) 
+        print("printing the types:", type(x), type(R))  
+        #return  df() - R * x * (1 - x) 
 
    # def Fs(self, nn: NNApproximator, x):
    #     return torch.Tensor([self.fu(nn, x), self.g(nn, x)])  # This one does not work and raises the error, 

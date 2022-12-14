@@ -22,7 +22,8 @@ class SteepestDescent:
             yl = f(x)
             g[i] = (yr - yl) / (2 * h)
             x[i] = tmp
-
+            print("the value of yr is", yr)
+            print("the shape of yr is ", yr.shape)
         #print("shape of g:", g.shape)
 
         return g
