@@ -10,14 +10,9 @@ from torchmin import minimize
 from typing import Any, Callable
 from dataclasses import dataclass
 from object import ObjNew
-from model import NNApproximator
+from object import ObjNew, NNApproximator
 
 nn_approximator = NNApproximator(4, 10)
-
-
-#print("learnable parameters of the neural network:", list(nn_approximator.parameters()))
-
-
 
 #@title steepest descent for multi-criteria learning
 @dataclass
@@ -31,6 +26,8 @@ class SteepestDescent:
         
         g = torch.zeros_like(x)
 
+        print("the shape of g is", g.shape)
+
         for i in range(self.ndim):
             z = x.clone()  #needed to avoid in-place operation as x required gradient. 
             tmp = z[i]
@@ -39,13 +36,20 @@ class SteepestDescent:
             z[i] = tmp - h
             yl = f(z)
 
-            g[i] = (yr - yl) / (2 * h)
+            print("printing the values of loss functinos:", yr, yl)
+            print("printing the shapes of first loss functinos:", yr.shape,"printing \
+                the shape of the second loss function", yl.shape)
 
+            print("printing the shape of the substraction of loss functinos:", (yr - yl).shape)
+
+            g[i] = (yr - yl) / (2 * h)
+            #x[i] = tmp
+        #print("this is how g looks like:", g.shape)
         return g
 
     def nabla_F(self, x):
         obj = ObjNew()
-        F = obj.Fss()  # I think this is not necessary. Probably we can do it without Fss and just with Fs
+        F = obj.Fss()
         nabla_F = torch.zeros((len(F), self.ndim)) # (m, n) dimensional matrix
         for i, f in enumerate(F):
             
@@ -69,6 +73,20 @@ class SteepestDescent:
     def theta(self, d, x):
         return self.phi(d, x) + 0.5 * torch.norm(d) ** 2
 
+    def armijo(self, d, x):
+        power = 0
+        obj = ObjNew()
+        t = pow(self.nu, power)
+        Fl = torch.tensor(obj.Fs(x + t * d))
+        Fr = torch.tensor(obj.Fs(x))
+        Re = self.sigma * t * torch.matmul(self.nabla_F(x), d)
+        while torch.all(Fl > Fr + Re):
+            t *= self.nu
+            Fl = torch.tensor(obj.Fs(x + t * d))
+            Fr = torch.tensor(obj.Fs(x))
+            Re = self.sigma * t * torch.matmul(self.nabla_F(x), d)
+        return t
+
     
     def armijo2(self, d, x):
         power = 0
@@ -77,16 +95,11 @@ class SteepestDescent:
         Fl = obj.Fs(nn_approximator, x + t * d)
         Fr = obj.Fs(nn_approximator, x)
         Re = self.sigma * t * torch.matmul(self.nabla_F(x), d)
-        print("my name is junaid")
-
         while np.all(Fl > Fr + Re):
             t *= self.nu
             Fl = obj.Fs(nn_approximator, x + t * d)
             Fr = obj.Fs(nn_approximator, x)
             Re = self.sigma * t * np.dot(self.nabla_F(x), d)
-
-            #print("My name is junaid")
-            #print("The parameters of the model are:", list(nn_approximator.parameters()))
         return t
     
     def steepest(self, x):
@@ -102,17 +115,8 @@ class SteepestDescent:
         # only get optimal calue
         d = d.x
         th = self.theta(d, x)
-
-        #print("the value of d is", d)
-
-
-        print("checking the condition of the while loop", abs(th) > self.eps)
-
         while abs(th) > self.eps:
             t = self.armijo2(d, x, nn_approximator)
-
-            print("the value of t is", t)
-
             x = x + t * d
             d = minimize(callable_phi, d0, method = 'bfgs')   #here i replaced the array with a list
             d = d.x

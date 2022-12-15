@@ -32,5 +32,4 @@ class NNApproximator(nn.Module):
         out = self.act(self.layer_in(x))
         for layer in self.middle_layers:
             out = self.act(layer(out))
-        #print("shape of output layer:", self.layer_out(out).shape)
         return self.layer_out(out)

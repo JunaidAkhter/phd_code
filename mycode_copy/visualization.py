@@ -23,7 +23,7 @@ obj = ObjNew()
 
 torch.random.manual_seed(10)
 
-nmax = 1000 # the number of computing the Pareto optimal
+nmax = 100 # the number of computing the Pareto optimal
 
 x_opt = torch.zeros((nmax, input_dim))
 f_opt = torch.zeros((nmax, 2))
@@ -42,8 +42,11 @@ for i in range(nmax):
 
     #print("the shape of x in visualization file", x.shape)
     
-    x_opt[i] = torch.flatten(x)  #flatten the tensor x from (len(x), 1) to (len(x), )
+    x_opt[i] = torch.flatten(x)
 
+    print("type of the objective function container:", type(obj.Fs(x)))
+
+    print("the shape of the function ", torch.tensor(obj.Fs(x)).shape)
 
     f_opt[i] = torch.tensor(obj.Fs(x))
 
@@ -54,16 +57,9 @@ f_opt = f_opt.detach().numpy()
 
 
 
-#print("the shape of x_opt", x_opt.shape)
-
-
 fig, ax = plt.subplots(1, 2, figsize = (12, 4))
 ax[0].scatter(f_opt[:, 0], f_opt[:, 1], c="r", alpha=0.7)
 ax[1].scatter(x_opt[:, 0], x_opt[:, 1], c="r", alpha=0.7)
-
-#ax[2].scatter(x_opt[:, 0], f_opt[:, 0], c="r", alpha=0.7)
-#ax[3].scatter(x_opt[:, 0], f_opt[:, 1], c="r", alpha=0.7)
-
 
 ax[0].set_xlabel("$f_1(x)$")
 ax[0].set_ylabel("$f_2(x)$")
@@ -71,8 +67,6 @@ ax[1].set_xlabel("$x_1$")
 ax[1].set_ylabel("$x_2$")
 ax[0].set_title("The Pareto Front")
 ax[1].set_title("The Pareto Optimal set")
-
-
 
 fig.tight_layout()
 plt.show()
