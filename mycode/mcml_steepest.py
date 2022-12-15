@@ -74,16 +74,23 @@ class SteepestDescent:
         power = 0
         obj = ObjNew()
         t = pow(self.nu, power)
-        Fl = obj.Fs(nn_approximator, x + t * d)
-        Fr = obj.Fs(nn_approximator, x)
+        Fl = obj.Fs(x + t * d)
+        Fr = obj.Fs(x)
         Re = self.sigma * t * torch.matmul(self.nabla_F(x), d)
-        print("my name is junaid")
+        #print("my name is junaid")
 
-        while np.all(Fl > Fr + Re):
+        #print("checking values of loss functions:", Fl, Fr, Re)
+
+        #print("checking type of loss functions:", type(Fl), type(Fr), type(Re))
+        while torch.all(Fl > Fr + Re):
+        #while 1 != 0:   
+           
             t *= self.nu
-            Fl = obj.Fs(nn_approximator, x + t * d)
-            Fr = obj.Fs(nn_approximator, x)
-            Re = self.sigma * t * np.dot(self.nabla_F(x), d)
+            Fl = obj.Fs(x + t * d)
+            Fr = obj.Fs(x)
+
+            #print("shapes of tensors:", self.nabla_F(x).shape, d.shape)
+            Re = self.sigma * t * torch.matmul(self.nabla_F(x), d)
 
             #print("My name is junaid")
             #print("The parameters of the model are:", list(nn_approximator.parameters()))
@@ -106,12 +113,12 @@ class SteepestDescent:
         #print("the value of d is", d)
 
 
-        print("checking the condition of the while loop", abs(th) > self.eps)
+        print(abs(th) > self.eps)
 
         while abs(th) > self.eps:
-            t = self.armijo2(d, x, nn_approximator)
+            t = self.armijo2(d, x)
 
-            print("the value of t is", t)
+            #print("the value of t is", t)
 
             x = x + t * d
             d = minimize(callable_phi, d0, method = 'bfgs')   #here i replaced the array with a list

@@ -12,7 +12,7 @@ sd = SteepestDescent(
     ndim=input_dim,
     nu=0.8,
     sigma=0.8,
-    eps=1e-5,
+    eps=1e-7,
 )
 
 
@@ -54,14 +54,19 @@ f_opt = f_opt.detach().numpy()
 
 
 
+#checking if we got the solution of the differential equation
+
+
+
+
 #print("the shape of x_opt", x_opt.shape)
 
 
-fig, ax = plt.subplots(1, 2, figsize = (12, 4))
+fig, ax = plt.subplots(1, 3, figsize = (12, 4))
 ax[0].scatter(f_opt[:, 0], f_opt[:, 1], c="r", alpha=0.7)
-ax[1].scatter(x_opt[:, 0], x_opt[:, 1], c="r", alpha=0.7)
+#ax[1].scatter(x_opt[:, 0], x_opt[:, 1], c="r", alpha=0.7)
 
-#ax[2].scatter(x_opt[:, 0], f_opt[:, 0], c="r", alpha=0.7)
+#ax[1].scatter(x_opt[:, 0], f_opt[:, 0], c="r", alpha=0.7)
 #ax[3].scatter(x_opt[:, 0], f_opt[:, 1], c="r", alpha=0.7)
 
 

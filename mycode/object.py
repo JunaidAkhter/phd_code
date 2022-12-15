@@ -27,7 +27,6 @@ def df(x, order: int = 1) -> torch.Tensor:
 
     df_value = f()(x) #correct way of obtaining df_value
 
-    
     for _ in range(order):
         df_value = torch.autograd.grad(
             df_value,
@@ -72,7 +71,7 @@ class ObjNew:
 
         
     def Fs(self, x):
-        return [self.f(x), self.g(x)]
+        return torch.tensor([self.f(x), self.g(x)])
 
     def Fss(self):
         return np.array([self.f, self.g])
