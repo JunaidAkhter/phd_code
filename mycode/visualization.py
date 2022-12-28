@@ -23,7 +23,7 @@ obj = ObjNew()
 
 torch.random.manual_seed(10)
 
-nmax = 1000 # the number of computing the Pareto optimal
+nmax = 100 # the number of computing the Pareto optimal
 
 x_opt = torch.zeros((nmax, input_dim))
 f_opt = torch.zeros((nmax, 2))

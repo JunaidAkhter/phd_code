@@ -12,7 +12,7 @@ from dataclasses import dataclass
 from object import ObjNew
 from model import NNApproximator
 
-nn_approximator = NNApproximator(4, 10)
+nn_approximator = NNApproximator(2, 4)
 
 
 #print("learnable parameters of the neural network:", list(nn_approximator.parameters()))
@@ -27,7 +27,10 @@ class SteepestDescent:
     sigma: float
     eps: float
 
-    def grad(self, f, x, h=1e-4):
+
+
+
+    """def grad(self, f, x, h=1e-4):
         
         g = torch.zeros_like(x)
 
@@ -41,7 +44,20 @@ class SteepestDescent:
 
             g[i] = (yr - yl) / (2 * h)
 
-        return g
+        print("grad shape: ", g.shape)
+        return g"""
+    
+
+    def grad(self,f, x):
+
+        gradients  = torch.autograd.grad(f(x), x)[0]
+
+        print("gradients:", gradients)
+
+        print("gradients shape:", gradients.shape)
+        return gradients
+
+
 
     def nabla_F(self, x):
         obj = ObjNew()
@@ -52,6 +68,11 @@ class SteepestDescent:
             #print("jacobian initial:", nabla_F.shape, "jacobian cal:", self.grad(F[i], x).shape)
             
             nabla_F[i] = torch.transpose(self.grad(F[i], x), 0, 1)  #Here I took a transpose compared to the original code. 
+
+
+            print("gradients", self.grad(F[i], x))
+
+
         return nabla_F
 
     def phi(self, d, x):
@@ -92,8 +113,6 @@ class SteepestDescent:
             #print("shapes of tensors:", self.nabla_F(x).shape, d.shape)
             Re = self.sigma * t * torch.matmul(self.nabla_F(x), d)
 
-            #print("My name is junaid")
-            #print("The parameters of the model are:", list(nn_approximator.parameters()))
         return t
     
     def steepest(self, x):
@@ -115,13 +134,20 @@ class SteepestDescent:
 
         print(abs(th) > self.eps)
 
+        i = 0
         while abs(th) > self.eps:
+            
+            i = i + 1
+
             t = self.armijo2(d, x)
 
-            #print("the value of t is", t)
+            print("i:", i, "t", t)
 
             x = x + t * d
+
             d = minimize(callable_phi, d0, method = 'bfgs')   #here i replaced the array with a list
             d = d.x
             th = self.theta(d, x)
+
+
         return x
