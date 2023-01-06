@@ -22,11 +22,13 @@ class SteepestDescent:
             yl = f(x)
             g[i] = (yr - yl) / (2 * h)
             x[i] = tmp
-            print("the value of yr is", yr)
-            print("the shape of yr is ", yr.shape)
+            #print("the value of yr is", yr)
+            #print("the shape of yr is ", yr.shape)
         #print("shape of g:", g.shape)
 
         return g
+
+        
 
     def nabla_F(self, x):
         obj = Obj()
@@ -61,8 +63,18 @@ class SteepestDescent:
     def steepest(self, x):
         d = np.array(fmin(self.phi, x, args=(x, )))
         th = self.theta(d, x)
+        #print("th", th)
+        print(abs(th) > self.eps)
+        i = 0
         while abs(th) > self.eps:
+            print("i:", i)
+    
+            i = i + 1
+
             t = self.armijo(d, x)
+
+            #print("t:", t)
+
             x = x + t * d
             d = np.array(fmin(self.phi, x, args=(x, )))
             th = self.theta(d, x)

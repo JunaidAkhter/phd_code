@@ -52,9 +52,9 @@ class SteepestDescent:
 
         gradients  = torch.autograd.grad(f(x), x)[0]
 
-        print("gradients:", gradients)
+        #print("gradients:", gradients)
 
-        print("gradients shape:", gradients.shape)
+        #print("gradients shape:", gradients.shape)
         return gradients
 
 
@@ -113,6 +113,8 @@ class SteepestDescent:
             #print("shapes of tensors:", self.nabla_F(x).shape, d.shape)
             Re = self.sigma * t * torch.matmul(self.nabla_F(x), d)
 
+            print("t inside:", t)
+
         return t
     
     def steepest(self, x):
@@ -145,7 +147,7 @@ class SteepestDescent:
 
             x = x + t * d
 
-            d = minimize(callable_phi, d0, method = 'bfgs')   #here i replaced the array with a list
+            d = minimize(callable_phi, d, method = 'bfgs')   #here i replaced the array with a list
             d = d.x
             th = self.theta(d, x)
 
